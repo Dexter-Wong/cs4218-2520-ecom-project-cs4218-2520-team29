@@ -6,7 +6,13 @@ import JWT from "jsonwebtoken";
 
 export const registerController = async (req, res) => {
   try {
-    const { name, email, password, phone, address, answer } = req.body;
+    let { name, email, password, phone, address, answer, password_confirm } = req.body;
+    // normalize inputs
+    email = email?.trim().toLowerCase();
+    name = name?.trim();
+    address = address?.trim();
+    answer = answer?.trim();
+
     //validations
     if (!name) {
       return res.status(400).send({ message: "Name is Required" });
@@ -25,6 +31,30 @@ export const registerController = async (req, res) => {
     }
     if (!answer) {
       return res.status(400).send({ message: "Answer is Required" });
+    }
+    if (password !== password_confirm) {
+      return res.status(400).send({
+        success: false,
+        message: "Passwords do not match",
+      });
+    }
+    // Chia Jia Ye A0286580U
+    // validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).send({
+        success: false,
+        message: 'Please provide a valid email address'
+      });
+    }
+
+    // validate password strength
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).send({
+        success: false,
+        message: 'Password must be at least 8 characters with uppercase letter, lowercase letter, number, and special character (@$!%*?&#)'
+      });
     }
     //check user
     const exisitingUser = await userModel.findOne({ email });

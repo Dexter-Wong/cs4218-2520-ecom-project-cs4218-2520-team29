@@ -9,6 +9,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [DOB, setDOB] = useState("");
@@ -18,11 +19,18 @@ const Register = () => {
   // form function
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     try {
       const res = await axios.post("/api/v1/auth/register", {
         name,
         email,
         password,
+        password_confirm: confirmPassword,
         phone,
         address,
         DOB,
@@ -35,8 +43,8 @@ const Register = () => {
         toast.error(res.data.message);
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
+      console.log(error.response?.data);
+      toast.error(error?.response?.data?.message || "Something is wrong");
     }
   };
 
@@ -76,6 +84,20 @@ const Register = () => {
               className="form-control"
               id="exampleInputPassword1"
               placeholder="Enter Your Password"
+              required
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).{8,}$"
+              title="Password must be at least 8 characters and include uppercase,
+                lowercase, number, and special character."
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="form-control"
+              id="exampleInputConfirmPassword1"
+              placeholder="Confirm Password"
               required
             />
           </div>
