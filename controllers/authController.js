@@ -38,6 +38,7 @@ export const registerController = async (req, res) => {
         message: "Passwords do not match",
       });
     }
+    // Chia Jia Ye A0286580U
     // validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {

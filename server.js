@@ -1,39 +1,42 @@
-import express from "express";
-import colors from "colors";
-import dotenv from "dotenv";
-import morgan from "morgan";
-import connectDB from "./config/db.js";
-import authRoutes from './routes/authRoute.js'
-import categoryRoutes from './routes/categoryRoutes.js'
-import productRoutes from './routes/productRoutes.js'
-import cors from "cors";
+import express from 'express';
+import dotenv from 'dotenv';
+import morgan from 'morgan';
+import cors from 'cors';
+import connectDB from './config/db.js';
 
-// configure env
+// Configure env
 dotenv.config();
 
-//database config
+// Database connection
 connectDB();
 
+// Create Express app
 const app = express();
 
-//middlewares
+// Middlewares
 app.use(cors());
-app.use(express.json());
 app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-//routes
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/category", categoryRoutes);
-app.use("/api/v1/product", productRoutes);
+// Routes
+import authRoute from './routes/authRoute.js';
+import productRoute from './routes/productRoutes.js';
+import categoryRoute from './routes/categoryRoutes.js';
 
-// rest api
+app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/product', productRoute);
+app.use('/api/v1/category', categoryRoute);
 
-app.get('/', (req,res) => {
-    res.send("<h1>Welcome to ecommerce app</h1>");
-});
+// Export app for testing
+export default app;
 
-const PORT = process.env.PORT || 6060;
-
-app.listen(PORT, () => {
-    console.log(`Server running on ${process.env.DEV_MODE} mode on ${PORT}`.bgCyan.white);
-});
+// Only start server if NODE_ENV is not 'test'
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 6060;
+  app.listen(PORT, () => {
+    console.log(
+      `Server running on ${process.env.DEV_MODE} mode on ${PORT}`.bgCyan.white
+    );
+  });
+}
