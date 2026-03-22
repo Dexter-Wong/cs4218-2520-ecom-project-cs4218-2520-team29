@@ -20,7 +20,7 @@ beforeAll(async () => {
   // Connect to test database
   if (mongoose.connection.readyState === 0) {
     try {
-      await mongoose.connect(process.env.MONGO_URL, {
+      await mongoose.connect(process.env.MONGO_URL_TEST, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
@@ -45,11 +45,10 @@ afterAll(async () => {
 });
 
 // Clear database between each test
-afterEach(async () => {
+beforeEach(async () => {
   try {
-    const collections = mongoose.connection.collections;
-    for (const key in collections) {
-      const collection = collections[key];
+    const collections = await mongoose.connection.db.collections();
+    for (const collection of collections) {
       await collection.deleteMany({});
     }
   } catch (error) {
