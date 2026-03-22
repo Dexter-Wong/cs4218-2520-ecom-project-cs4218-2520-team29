@@ -24,29 +24,9 @@ authentication without invoking the full login workflow (since its being tested 
 import request from "supertest";
 import mongoose from "mongoose";
 import JWT from "jsonwebtoken";
-import { MongoMemoryServer } from "mongodb-memory-server";
 import server from "../../server.js";
 import orderModel from "../../models/orderModel";
 import userModel from "../../models/userModel.js";
-
-let mongoServer;
-
-beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    await mongoose.connect(mongoServer.getUri());
-});
-
-afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
-});
-
-afterEach(async () => {
-    const collections = mongoose.connection.collections;
-    for (const key in collections) {
-        await collections[key].deleteMany({});
-    }
-});
 
 // Creates a user in DB with a signed JWT
 const createUserWithToken = async (overrides = {}) => {

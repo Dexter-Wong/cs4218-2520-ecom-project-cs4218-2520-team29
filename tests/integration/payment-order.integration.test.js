@@ -1,7 +1,6 @@
 import request from "supertest";
 import mongoose from "mongoose";
 import JWT from "jsonwebtoken";
-import { MongoMemoryServer } from "mongodb-memory-server";
 
 const mockSale = jest.fn();
 const mockGenerate = jest.fn();
@@ -14,29 +13,9 @@ jest.mock("braintree", () => ({
     Environment: { Sandbox: "sandbox" },
 }));
 
-import server from "../server.js";
-import orderModel from "../models/orderModel.js";
-import userModel from "../models/userModel.js";
-
-let mongoServer;
-
-beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    await mongoose.connect(mongoServer.getUri());
-});
-
-afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
-});
-
-afterEach(async () => {
-    const collections = mongoose.connection.collections;
-    for (const key in collections) {
-        await collections[key].deleteMany({});
-    }
-    jest.clearAllMocks();
-});
+import server from "../../server.js";
+import orderModel from "../../models/orderModel.js";
+import userModel from "../../models/userModel.js";
 
 const createUserWithToken = async (overrides = {}) => {
     const user = await userModel.create({
