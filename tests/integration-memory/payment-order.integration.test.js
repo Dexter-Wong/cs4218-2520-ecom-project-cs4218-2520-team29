@@ -1,9 +1,14 @@
 import request from "supertest";
 import mongoose from "mongoose";
 import JWT from "jsonwebtoken";
+import { MongoMemoryServer } from "mongodb-memory-server";
 
 const mockSale = jest.fn();
 const mockGenerate = jest.fn();
+
+beforeEach(() => {
+    jest.clearAllMocks();
+});
 
 jest.mock("braintree", () => ({
     BraintreeGateway: jest.fn(() => ({
@@ -17,10 +22,31 @@ import server from "../../server.js";
 import orderModel from "../../models/orderModel.js";
 import userModel from "../../models/userModel.js";
 
+let mongoServer;
+
+beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    await mongoose.connect(mongoServer.getUri());
+});
+
+afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+});
+
+afterEach(async () => {
+    const collections = mongoose.connection.collections;
+    for (const key in collections) {
+        await collections[key].deleteMany({});
+    }
+    jest.clearAllMocks();
+});
+
+
 const createUserWithToken = async (overrides = {}) => {
     const user = await userModel.create({
         name: "Test User",
-        email: `user_${Date.now()}@test.com`,
+        email: `user_${Date.now()}_${Math.random()}@test.com`,
         password: "hashedpassword",
         phone: "12345678",
         address: "123 Test Street",
