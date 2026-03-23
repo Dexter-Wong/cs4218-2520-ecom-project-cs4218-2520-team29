@@ -13,7 +13,7 @@ test.describe('Product Details Page', () => {
             sessionStorage.clear();
         });
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Displays product information when product details page loads', async ({ page }) => {
         await page.goto(`/product/${PRODUCT_SLUG}`);
 
@@ -26,7 +26,7 @@ test.describe('Product Details Page', () => {
         await expect(page.getByText(/Price :/i)).toBeVisible();
         await expect(page.getByText(/Category :/i)).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Shows an active Add to Cart button on the product page', async ({ page }) => {
         await page.goto(`/product/${PRODUCT_SLUG}`);
 
@@ -35,7 +35,7 @@ test.describe('Product Details Page', () => {
         await expect(addButton).toBeVisible();
         await expect(addButton).toBeEnabled();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Updates cart indicator after adding a product to cart', async ({ page }) => {
         await page.goto(`/product/${PRODUCT_SLUG}`);
 
@@ -43,13 +43,13 @@ test.describe('Product Details Page', () => {
 
         await expect(page.getByTitle('1')).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Displays the Similar Products section on the page', async ({ page }) => {
         await page.goto(`/product/${PRODUCT_SLUG}`);
 
         await expect(page.getByRole('heading', { name: /Similar Products/i })).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Navigates to another product when selecting a related item', async ({ page }) => {
         await page.goto(`/product/${PRODUCT_SLUG}`);
 
@@ -67,7 +67,7 @@ test.describe('Product Details Page', () => {
             await expect(page.getByText('No Similar Products found')).toBeVisible();
         }
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Shows empty state message when no related products are available', async ({ page }) => {
         await page.goto(`/product/${NO_RELATED_PRODUCT}`);
 
@@ -75,7 +75,7 @@ test.describe('Product Details Page', () => {
         await expect(page.getByRole('heading', { name: 'Product Details' })).toBeVisible();
         await expect(page.getByText('No Similar Products found')).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Allows direct navigation to product page via URL', async ({ page }) => {
         await page.goto(`/product/${PRODUCT_SLUG}`);
 

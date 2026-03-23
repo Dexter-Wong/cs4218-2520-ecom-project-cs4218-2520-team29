@@ -10,7 +10,7 @@ test.describe('CategoryProduct', () => {
             sessionStorage.clear();
         });
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('All Categories page loads and displays category links', async ({ page }) => {
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'All Categories' }).click();
@@ -20,7 +20,7 @@ test.describe('CategoryProduct', () => {
         await expect(page.getByRole('link', { name: 'Book' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'Clothing' })).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Selecting a category navigates to /category/:slug', async ({ page }) => {
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Electronics' }).click();
@@ -28,7 +28,7 @@ test.describe('CategoryProduct', () => {
         await expect(page).toHaveURL(/\/category\/electronics$/);
         await expect(page.getByText(/Category - Electronics/i)).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Category page displays category info and product cards', async ({ page }) => {
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Electronics' }).click();
@@ -40,7 +40,7 @@ test.describe('CategoryProduct', () => {
         await expect(cards.first()).toBeVisible();
         await expect(page.getByRole('button', { name: 'More Details' }).first()).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('CategoryProduct Display: each product card shows image, name, description, and price', async ({ page }) => {
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Electronics' }).click();
@@ -59,7 +59,7 @@ test.describe('CategoryProduct', () => {
 
         await expect(firstCard.locator('.card-text')).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Clicking More Details navigates to product details page', async ({ page }) => {
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Electronics' }).click();
@@ -69,7 +69,7 @@ test.describe('CategoryProduct', () => {
         await expect(page).toHaveURL(/\/product\//);
         await expect(page.getByRole('heading', { name: 'Product Details' })).toBeVisible();
     });
-
+    // Charles Lim Jun Wei, A0277527R
     test('Direct access to category route works', async ({ page }) => {
         await page.goto('/category/electronics');
 
