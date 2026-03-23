@@ -349,6 +349,97 @@ Key scenarios:
 
 ---
 
+### 3. Charles Lim Jun Wei (A0277527R)
+
+#### Components Tested:
+
+The integration tests cover multiple backend components:
+
+- **Routes**
+    - `/api/v1/auth/orders`
+    - `/api/v1/auth/all-orders`
+    - `/api/v1/auth/order-status/:orderId`
+    - `/api/v1/product/braintree/*`
+    - `/api/v1/auth/login`
+
+- **Controllers**
+    - `getOrdersController`
+    - `getAllOrdersController`
+    - `orderStatusController`
+    - `brainTreePaymentController`
+    - `braintreeTokenController`
+    - `loginController`
+
+- **Middleware**
+    - `requireSignIn`
+    - `isAdmin`
+
+- **Database (MongoDB)**
+    - order creation and retrieval
+    - order status updates
+    - user authentication linkage (buyer ↔ orders)
+    - data persistence across requests
+
+- **External Dependency**
+    - Braintree payment gateway (mocked)
+
+---
+
+### Test Suites Implemented:
+
+#### 1. Orders Integration Tests (`orders.integration.test.js`)
+
+**Focus:**
+- Orders API workflow
+- Controller–model interaction
+- Authorization and role-based access control
+- Data persistence and retrieval
+
+**Key scenarios:**
+- Authenticated user retrieves their own orders
+- Admin retrieves all orders
+- Admin updates order status successfully
+- Non-admin user is blocked from admin endpoints
+- Unauthenticated requests are rejected
+- Orders are returned with correct populated fields (excluding sensitive data)
+
+---
+
+#### 2. Payment → Order Integration Tests (`payment.integration.test.js`)
+
+**Focus:**
+- Payment processing workflow
+- Interaction between payment controller and order creation
+- External service handling (Braintree)
+- Authentication + payment + persistence pipeline
+
+**Key scenarios:**
+- Braintree token generation success and failure
+- Successful payment creates a new order in the database
+- Payment amount correctly matches cart total
+- Failed payment does not create an order
+- Unauthenticated or invalid-token requests are rejected
+- Orders created are correctly associated with the authenticated user
+- Multiple users create independent orders
+
+---
+
+#### 3. Auth → Orders Integration Tests (`authOrders.integration.test.js`)
+
+**Focus:**
+- Authentication flow to protected resource access
+- Token generation and validation
+- Cross-module interaction between Auth and Orders
+
+**Key scenarios:**
+- Successful login generates a valid token
+- Login-issued token grants access to Orders endpoint
+- Orders returned belong only to the authenticated user
+- Invalid login credentials do not produce a usable token
+- Unauthenticated requests to Orders are rejected
+
+---
+
 ### UI Testing Workload Distribution
 ### 1. Chia Jia Ye (A0286580U)
 #### Components Tested:
@@ -419,3 +510,76 @@ Scenarios tested include:
 - Updating product description
 - Verifying updates are reflected in admin product list
 - Reverting product back to original values to maintain database consistency
+
+---
+
+### 3. Charles Lim Jun Wei (A0277527R)
+
+#### Components Tested:
+
+The UI tests focus on user-side product browsing, product details viewing, and order viewing workflows:
+
+- **User Pages**
+    - Category Product (`pages/CategoryProduct.js`)
+    - Product Details (`pages/ProductDetails.js`)
+    - Orders (`pages/user/Order.js`)
+
+---
+
+### Test Suites Implemented:
+
+#### 1. Category Product UI Tests (`category-product.spec.js`)
+
+**Focus:**
+
+- Category browsing and product navigation workflow
+
+**Scenarios tested include:**
+
+- Navigating to the All Categories page
+- Selecting a category from the category list
+- Verifying navigation to `/category/:slug`
+- Verifying category name and result count are displayed
+- Verifying product cards render correctly for the selected category
+- Verifying each product card shows image, name, description, and price
+- Clicking **More Details** to navigate to `/product/:slug`
+- Verifying direct access to the category route works correctly
+
+---
+
+#### 2. Product Details UI Tests (`product-details.spec.js`)
+
+**Focus:**
+
+- Product details display and related product navigation workflow
+
+**Scenarios tested include:**
+
+- Navigating directly to `/product/:slug` and verifying product details load
+- Verifying product image, name, description, price, and category are displayed
+- Verifying the **Add to Cart** button is visible and enabled
+- Verifying the **Similar Products** section appears
+- If related products exist, clicking **More Details** navigates to another product details page
+- If no related products exist, displaying the message **“No Similar Products found”**
+- Verifying direct access to the product details route works correctly
+
+---
+
+#### 3. Orders UI Tests (`orders.spec.js`)
+
+**Focus:**
+
+- Authenticated user order viewing workflow
+
+**Scenarios tested include:**
+
+- Verifying the Orders page loads successfully for an authenticated user
+- Verifying the **All Orders** heading is displayed
+- Verifying order summary information such as status, buyer, payment state, quantity, and relative date is displayed
+- Verifying ordered product entries render correctly within each order
+- Verifying ordered product rows show image, name, description, and price
+- Verifying product images are rendered with valid product photo URLs
+- Verifying one summary row is shown per order
+- Verifying direct access to the Orders page works correctly for an authenticated user
+
+---
